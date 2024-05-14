@@ -1,4 +1,4 @@
-﻿using UI.MVA;
+﻿using UI.Common;
 using UI.Popup;
 using UI.Window;
 using UnityEngine;
@@ -16,9 +16,11 @@ namespace UI
         {
             Container.BindInstance(_windowsViews);
             Container.BindInstance(_popupViewsData);
-            Container.BindAllImplementationsOfType<IViewAdapter>();
+            
+            Container.BindAllImplementationsOfType<IBinder>();
             Container.BindAllImplementationsOfType<IWindowShowProcessor>();
-            Container.BindInterfacesTo<ViewInitializer>().AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<BinderAggregator>().AsSingle();
             Container.BindInterfacesTo<WindowShowController>().AsSingle();
             Container.BindInterfacesTo<PopupShowController>().AsSingle();
         }

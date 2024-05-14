@@ -2,35 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using UI.MVA;
-using UI.Window.ShowProcessors;
+using UI.Common;
 using UniRx;
 using UnityEngine;
 using Util.Extensions;
-using Zenject;
 
 namespace UI.Window
 {
-    public class WindowShowController : IWindowShowController, IInitializable, IDisposable
+    public class WindowShowController : IWindowShowController, IDisposable
     {
         private readonly Dictionary<Type, WindowView> _windowViews;
-        private readonly WindowViewsData _windowViewsData;
         private readonly Dictionary<Type, IWindowShowProcessor> _showProcessors;
+        private readonly BinderAggregator _binderAggregator;
 
         private CancellationTokenSource _cancellationTokenSource;
-        private List<WindowView> _openedWindows;
+        private readonly List<WindowView> _openedWindows;
         
-        public WindowShowController(WindowViewsData windowViewsData, IEnumerable<IWindowShowProcessor> showProcessors)
+        public WindowShowController(WindowViewsData windowViewsData, IEnumerable<IWindowShowProcessor> showProcessors, BinderAggregator binderAggregator)
         {
-            _windowViewsData = windowViewsData;
+            _binderAggregator = binderAggregator;
             _showProcessors = showProcessors.ToDictionary(x => x.GetType());
             _windowViews = windowViewsData.WindowViews.ToDictionary(x => x.GetType());
             _openedWindows = new List<WindowView>(windowViewsData.WindowViews);
-        }
-        
-        public void Initialize()
-        {
-            Show<InstantlyShowProcessor>(_windowViewsData.StartWindow);
         }
 
         public void Show<TWindow, TProcessor>() where TWindow : WindowView 
@@ -45,7 +38,7 @@ namespace UI.Window
             Show<TProcessor>(windowView);
         }
 
-        public void Show<TWindow, TProcessor, TModel>(TModel model) where TWindow : WindowView, IView<IViewAdapter<TModel>>
+        public void Show<TWindow, TProcessor, TModel>(TModel model) where TWindow : WindowView
                                                                     where TProcessor : IWindowShowProcessor
         {
             if (!_windowViews.TryGetValue(typeof(TWindow), out WindowView windowView))
@@ -54,16 +47,10 @@ namespace UI.Window
                 return;
             }
 
-            if (windowView is not TWindow genericView)
-            {
-                Debug.LogError($"Window of type {typeof(TWindow)} is not a view for {typeof(TModel)} model type");
-                return;
-            }
-
-            genericView.Adapter.SetUp(model);
+            _binderAggregator.Bind(windowView, model);
             Show<TProcessor>(windowView);
         }
-        
+
         private void Show<TProcessor>(WindowView windowView) where TProcessor : IWindowShowProcessor
         {
             if (!_showProcessors.TryGetValue(typeof(TProcessor), out IWindowShowProcessor showProcessor))

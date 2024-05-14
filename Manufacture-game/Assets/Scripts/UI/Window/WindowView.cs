@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Threading;
 using UI.Animation;
-using UI.MVA;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,53 +8,22 @@ namespace UI.Window
 {
     public abstract class WindowView : UIBehaviour
     {
-        public abstract Type ServicedAdapterType { get; }
-        public abstract bool IsShown { get; }
-
-        public abstract void SetAdapter(IViewAdapter adapter);
-        
-        public abstract void InstantlyShow();
-        public abstract void InstantlyHide();
-        
-        public abstract IEnumerator Show(CancellationToken ct);
-        public abstract IEnumerator Hide(CancellationToken ct);
-    }
-
-    public abstract class WindowView<T> : WindowView, IView<T> where T : IViewAdapter
-    {
         [SerializeField] private AppearAnimation _animation;
 
         private bool _hasAnimation;
-        private bool _isShown;
-        
-        public override Type ServicedAdapterType => typeof(T);
-        
-        public T Adapter { get; private set; }
-        public sealed override bool IsShown => _isShown;
+        public bool IsShown { get; private set; }
 
-        public sealed override void SetAdapter(IViewAdapter adapter)
-        { 
-            if (adapter is T genericAdapter)
-            {
-                SetAdapter(genericAdapter);
-            }
-            else
-            {
-                Debug.LogError($"Can't set {adapter} adapter to {this} view");
-            }
-        }
-
-        public override void InstantlyShow()
+        public virtual void InstantlyShow()
         {
-            _isShown = true;
+            IsShown = true;
         }
         
-        public override void InstantlyHide()
+        public virtual void InstantlyHide()
         {
-            _isShown = false;
+            IsShown = false;
         }
 
-        public sealed override IEnumerator Show(CancellationToken ct)
+        public IEnumerator Show(CancellationToken ct)
         {
             InstantlyShow();
             if (_hasAnimation)
@@ -70,7 +37,7 @@ namespace UI.Window
             }
         }
 
-        public sealed override IEnumerator Hide(CancellationToken ct)
+        public IEnumerator Hide(CancellationToken ct)
         {
             if (_hasAnimation)
             {
@@ -83,11 +50,6 @@ namespace UI.Window
             }
             
             InstantlyHide();
-        }
-
-        protected virtual void SetAdapter(T adapter)
-        {
-            Adapter = adapter;
         }
 
         protected override void Awake()

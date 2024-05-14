@@ -1,9 +1,8 @@
-﻿using UI.MVA;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UI.Window.Common
 {
-    public abstract class CanvasWindowView<T> : WindowView<T> where T : IViewAdapter
+    public class CanvasWindowView : WindowView
     {
         [SerializeField] private Canvas canvas;
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UI.Common;
-using UI.MVA;
 using UnityEngine;
 
 namespace UI.Popup
@@ -9,12 +8,14 @@ namespace UI.Popup
     public class PopupShowController : IPopupShowController
     {
         private readonly PopupViewsData _popupViewsData;
+        private readonly BinderAggregator _binderAggregator;
 
         private readonly List<PopupView> _openedPopups = new List<PopupView>();
         
-        public PopupShowController(PopupViewsData popupViewsData)
+        public PopupShowController(PopupViewsData popupViewsData, BinderAggregator binderAggregator)
         {
             _popupViewsData = popupViewsData;
+            _binderAggregator = binderAggregator;
         }
 
         public void Show<TModel>(TModel model, bool hideOthers = true)
@@ -52,16 +53,8 @@ namespace UI.Popup
 
         private PopupView FindAndSetUpPopup<TModel>(TModel model)
         {
-            PopupView popup = _popupViewsData.PopupViews.FirstOrDefault(popup => popup is IView<IViewAdapter<TModel>>);
-            
-            if (popup is not IView<IViewAdapter<TModel>> genericView)
-            {
-                Debug.LogError($"Popup of type {typeof(TModel)} not found");
-            }
-            else
-            {
-                genericView.Adapter.SetUp(model);
-            }
+            PopupView popup = _popupViewsData.PopupViews.FirstOrDefault(popup => popup.ServicedModelType.IsInstanceOfType(model));
+            _binderAggregator.Bind(popup, model);
             
             return popup;
         }
