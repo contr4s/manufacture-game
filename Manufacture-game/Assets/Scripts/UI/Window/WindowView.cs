@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Threading;
 using UI.Animation;
+using UI.MVA;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,7 +13,7 @@ namespace UI.Window
         public abstract Type ServicedAdapterType { get; }
         public abstract bool IsShown { get; }
 
-        public abstract void SetAdapter(IWindowAdapter adapter);
+        public abstract void SetAdapter(IViewAdapter adapter);
         
         public abstract void InstantlyShow();
         public abstract void InstantlyHide();
@@ -21,7 +22,7 @@ namespace UI.Window
         public abstract IEnumerator Hide(CancellationToken ct);
     }
 
-    public abstract class WindowView<T> : WindowView, IWindowView<T> where T : IWindowAdapter
+    public abstract class WindowView<T> : WindowView, IView<T> where T : IViewAdapter
     {
         [SerializeField] private AppearAnimation _animation;
 
@@ -33,7 +34,7 @@ namespace UI.Window
         public T Adapter { get; private set; }
         public sealed override bool IsShown => _isShown;
 
-        public sealed override void SetAdapter(IWindowAdapter adapter)
+        public sealed override void SetAdapter(IViewAdapter adapter)
         { 
             if (adapter is T genericAdapter)
             {

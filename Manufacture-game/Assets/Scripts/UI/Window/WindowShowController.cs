@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using UI.MVA;
 using UI.Window.ShowProcessors;
 using UniRx;
 using UnityEngine;
@@ -44,8 +45,8 @@ namespace UI.Window
             Show<TProcessor>(windowView);
         }
 
-        public void Show<TWindow, TProcessor, TModel>(TModel model) where TWindow : WindowView 
-                                                                    where TProcessor : IWindowShowProcessor 
+        public void Show<TWindow, TProcessor, TModel>(TModel model) where TWindow : WindowView, IView<IViewAdapter<TModel>>
+                                                                    where TProcessor : IWindowShowProcessor
         {
             if (!_windowViews.TryGetValue(typeof(TWindow), out WindowView windowView))
             {
@@ -53,7 +54,7 @@ namespace UI.Window
                 return;
             }
 
-            if (windowView is not IWindowView<IWindowAdapter<TModel>> genericView)
+            if (windowView is not TWindow genericView)
             {
                 Debug.LogError($"Window of type {typeof(TWindow)} is not a view for {typeof(TModel)} model type");
                 return;

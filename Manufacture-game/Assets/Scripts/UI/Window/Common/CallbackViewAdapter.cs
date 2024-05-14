@@ -1,6 +1,8 @@
-﻿namespace UI.Window.Common
+﻿using UI.MVA;
+
+namespace UI.Window.Common
 {
-    public class CallbackWindowAdapter : IWindowAdapter<CallbackWindowModel>
+    public class CallbackViewAdapter : IViewAdapter<CallbackWindowModel>
     {
         private CallbackWindowModel _model;
         

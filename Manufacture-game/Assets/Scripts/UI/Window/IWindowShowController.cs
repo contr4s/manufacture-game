@@ -1,4 +1,6 @@
-﻿namespace UI.Window
+﻿using UI.MVA;
+
+namespace UI.Window
 {
     public interface IWindowShowController
     {
@@ -6,6 +8,6 @@
                                          where TProcessor : IWindowShowProcessor;
 
         void Show<TWindow, TProcessor, TModel>(TModel model) where TProcessor : IWindowShowProcessor
-                                                             where TWindow : WindowView;
+                                                             where TWindow : WindowView, IView<IViewAdapter<TModel>>;
     }
 }
