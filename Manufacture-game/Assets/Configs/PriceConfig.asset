@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PriceConfig
   m_EditorClassIdentifier: 
   prices:
-  - product: 0
-    price: 5
   - product: 1
-    price: 10
+    price: 5
   - product: 2
+    price: 10
+  - product: 3
     price: 15

@@ -5,25 +5,28 @@ using Domain.Buildings;
 using Domain.Buildings.Factories;
 using Domain.View;
 using UnityEngine;
-using Zenject;
 
 namespace Domain
 {
-    public class WorldInitializer : IInitializable
+    public class WorldInitializer
     {
         private readonly WorldData _worldData;
+        private readonly GameState _gameState;
         private readonly Dictionary<Type, IBuildingFactory> _factories;
+
+        public int OptionalBuildingsCount { get; set; }
         
-        public WorldInitializer(WorldData worldData, IEnumerable<IBuildingFactory> factories)
+        public WorldInitializer(WorldData worldData, IEnumerable<IBuildingFactory> factories, GameState gameState)
         {
             _worldData = worldData;
+            _gameState = gameState;
             _factories = factories.ToDictionary(f => f.ServicedBuildingType);
         }
         
-        public void Initialize(int optionalBuildingsCount = 0)
+        public void Initialize()
         {
             var buildings = _worldData.RequiredBuildingViews
-                                      .Concat(_worldData.OptionalBuildingViews.Take(optionalBuildingsCount));
+                                      .Concat(_worldData.OptionalBuildingViews.Take(OptionalBuildingsCount));
             
             foreach (BuildingView buildingView in buildings)
             {
@@ -37,16 +40,12 @@ namespace Domain
                 buildingView.Init(building);
             }
 
-            foreach (BuildingView redundantView in _worldData.OptionalBuildingViews.Skip(optionalBuildingsCount))
+            foreach (BuildingView redundantView in _worldData.OptionalBuildingViews.Skip(OptionalBuildingsCount))
             {
                 redundantView.gameObject.SetActive(false);
             }
-        }
 
-        //temp
-        public void Initialize()
-        {
-            Initialize(2);
+            _gameState.IsGameStarted = true;
         }
     }
 }

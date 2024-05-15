@@ -25,6 +25,7 @@ namespace UI
             Container.BindInterfacesTo<PopupShowController>().AsSingle();
 
             Container.BindInterfacesTo<BuildingsRayCaster>().AsSingle();
+            Container.BindInterfacesTo<UiInitializer>().AsSingle();
         }
     }
 }

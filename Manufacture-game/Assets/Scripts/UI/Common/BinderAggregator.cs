@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UI.Window;
+using UI.Window.Common;
 using UnityEngine;
 
 namespace UI.Common
@@ -14,6 +16,17 @@ namespace UI.Common
         public BinderAggregator(IEnumerable<IBinder> binders)
         {
             _binders = binders.ToDictionary(x => (x.ServicedViewType, x.ServiceModelType));
+        }
+
+        public void Init(IWindowShowController windowShowController)
+        {
+            foreach (IBinder binder in _binders.Values)
+            {
+                if (binder is IWindowBinder windowBinder)
+                {
+                    windowBinder.ShowController = windowShowController;
+                }
+            }
         }
         
         public void Bind<TView, TModel>(TView view, TModel model)

@@ -16,6 +16,8 @@ namespace Domain
 
             Container.BindInstance(worldData).AsSingle();
             Container.BindInterfacesAndSelfTo<WorldInitializer>().AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<GameState>().AsSingle();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Domain.Buildings
     public abstract class ProductionBuilding : IBuilding, IDisposable
     {
         private readonly FloatReactiveProperty _currentProgress = new FloatReactiveProperty(0);
+        private readonly BoolReactiveProperty _isProductionInProgress = new BoolReactiveProperty(false);
         
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -18,8 +19,8 @@ namespace Domain.Buildings
 
         public IReadOnlyReactiveProperty<float> CurrentProgress => _currentProgress;
         public IReadOnlyReactiveProperty<bool> CanStartProduction => CanStartProductionInternal;
+        public IReadOnlyReactiveProperty<bool> IsProductionInProgress => _isProductionInProgress;
         public float ProductionSpeed { get; private set; }
-        public bool IsProductionInProgress { get; private set; }
 
         public ProductionBuilding(float productionSpeed)
         {
@@ -29,7 +30,7 @@ namespace Domain.Buildings
         public void StartProduction()
         {
             _cancellationTokenSource = _cancellationTokenSource.Refresh();
-            IsProductionInProgress = true;
+            _isProductionInProgress.Value = true;
             MainThreadDispatcher.StartCoroutine(Production(_cancellationTokenSource.Token));
         }
         
@@ -54,7 +55,7 @@ namespace Domain.Buildings
                 }
                 yield return null;
             }
-            IsProductionInProgress = false;
+            _isProductionInProgress.Value = false;
         }
 
         void IDisposable.Dispose()

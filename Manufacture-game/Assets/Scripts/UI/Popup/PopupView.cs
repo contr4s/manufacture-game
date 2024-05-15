@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UI.Popup
@@ -8,10 +7,9 @@ namespace UI.Popup
     public abstract class PopupView : UIBehaviour
     {
         public RectTransform RectTransform { get; private set; }
-        public abstract Type ServicedModelType { get; }
         
-        public abstract void Show();
-        public abstract void Hide();
+        public void Show() => gameObject.SetActive(true);
+        public void Hide() => gameObject.SetActive(false);
 
         protected override void Awake()
         {

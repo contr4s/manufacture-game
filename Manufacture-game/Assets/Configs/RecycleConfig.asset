@@ -15,11 +15,11 @@ MonoBehaviour:
   recycleCombinations:
   - first: 0
     second: 1
-    result: 0
+    result: 1
   - first: 0
     second: 2
-    result: 1
+    result: 2
   - first: 1
     second: 2
-    result: 2
-  <RecycleTime>k__BackingField: 0
+    result: 3
+  <RecycleTime>k__BackingField: 10

@@ -13,6 +13,13 @@ namespace Domain
         public IReadOnlyReactiveProperty<int> Coins => _coins;
         public IReadOnlyReactiveDictionary<ResourceType, Resource> Resources => _resources;
         public IReadOnlyReactiveDictionary<ProductType, Product> Products => _products;
+
+        internal void Reset()
+        {
+            _coins.Value = 0;
+            _resources.Clear();
+            _products.Clear();
+        }
         
         internal void AddCoins(int coins) => _coins.Value += coins;
 

@@ -2,31 +2,38 @@
 using System.Linq;
 using UI.Common;
 using UnityEngine;
+using Zenject;
 
 namespace UI.Popup
 {
-    public class PopupShowController : IPopupShowController
+    public class PopupShowController : IPopupShowController, IInitializable
     {
         private readonly PopupViewsData _popupViewsData;
         private readonly BinderAggregator _binderAggregator;
 
-        private readonly List<PopupView> _openedPopups = new List<PopupView>();
+        private readonly List<PopupView> _openedPopups;
         
         public PopupShowController(PopupViewsData popupViewsData, BinderAggregator binderAggregator)
         {
             _popupViewsData = popupViewsData;
             _binderAggregator = binderAggregator;
+            _openedPopups = new List<PopupView>(_popupViewsData.PopupViews);
+        }
+        
+        public void Initialize()
+        {
+            HideAll();
         }
 
-        public void Show<TModel>(TModel model, bool hideOthers = true)
+        public void Show<TPopup, TModel>(TModel model, bool hideOthers = true) where TPopup : PopupView
         {
-            PopupView popup = FindAndSetUpPopup(model);
+            TPopup popup = FindAndSetUpPopup<TPopup, TModel>(model);
             Show(popup, hideOthers);
         }
 
-        public void Show<TModel>(TModel model, IUiPositionOptions positionOptions, bool hideOthers = true)
+        public void Show<TPopup, TModel>(TModel model, IUiPositionOptions positionOptions, bool hideOthers = true) where TPopup : PopupView
         {
-            PopupView popup = FindAndSetUpPopup(model);
+            TPopup popup = FindAndSetUpPopup<TPopup, TModel>(model);
             positionOptions.ApplyOn(popup.RectTransform);
             Show(popup, hideOthers);
         }
@@ -51,11 +58,11 @@ namespace UI.Popup
             _openedPopups.Add(popupView);
         }
 
-        private PopupView FindAndSetUpPopup<TModel>(TModel model)
+        private TPopup FindAndSetUpPopup<TPopup, TModel>(TModel model) where TPopup : PopupView
         {
-            PopupView popup = _popupViewsData.PopupViews.FirstOrDefault(popup => popup.ServicedModelType.IsInstanceOfType(model));
+            TPopup popup = _popupViewsData.PopupViews.FirstOrDefault(popup => popup is TPopup) as TPopup;
             _binderAggregator.Bind(popup, model);
-            
+
             return popup;
         }
     }

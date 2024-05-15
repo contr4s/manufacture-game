@@ -4,8 +4,8 @@ namespace UI.Popup
 {
     public interface IPopupShowController
     {
-        void Show<TModel>(TModel model, bool hideOthers = true);
-        void Show<TModel>(TModel model, IUiPositionOptions positionOptions, bool hideOthers = true);
+        void Show<TPopup, TModel>(TModel model, bool hideOthers = true) where TPopup : PopupView;
+        void Show<TPopup, TModel>(TModel model, IUiPositionOptions positionOptions, bool hideOthers = true) where TPopup : PopupView;
 
         void HideAll();
     }

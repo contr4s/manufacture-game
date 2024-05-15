@@ -2,6 +2,7 @@
 {
     public enum ProductType
     {
+        None,
         Hammer,
         Pitchfork,
         Drill
