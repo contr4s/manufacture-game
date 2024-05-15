@@ -1,5 +1,4 @@
-﻿
-using Domain.Items;
+﻿using Domain.Items;
 
 namespace Domain.Buildings
 {

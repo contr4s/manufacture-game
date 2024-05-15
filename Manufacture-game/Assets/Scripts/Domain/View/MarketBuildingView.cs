@@ -1,9 +1,8 @@
 ﻿using Domain.Buildings;
-using UnityEngine;
 
 namespace Domain.View
 {
-    public class MarketBuildingView : MonoBehaviour, IBuildingView<MarketBuilding>
+    public class MarketBuildingView : BuildingView<MarketBuilding>
     {
         
     }

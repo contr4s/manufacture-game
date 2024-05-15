@@ -11,6 +11,8 @@ namespace Domain.Configs
     {
         [SerializeField] private RecycleCombination[] recycleCombinations;
         
+        [field: SerializeField] public float RecycleTime { get; private set; }
+        
         private Dictionary<(ResourceType, ResourceType), ProductType> _recycleCombinations;
         
         private Dictionary<(ResourceType, ResourceType), ProductType> RecycleCombinations =>

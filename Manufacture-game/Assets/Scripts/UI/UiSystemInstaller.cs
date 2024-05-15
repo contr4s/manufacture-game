@@ -23,6 +23,8 @@ namespace UI
             Container.BindInterfacesAndSelfTo<BinderAggregator>().AsSingle();
             Container.BindInterfacesTo<WindowShowController>().AsSingle();
             Container.BindInterfacesTo<PopupShowController>().AsSingle();
+
+            Container.BindInterfacesTo<BuildingsRayCaster>().AsSingle();
         }
     }
 }
